@@ -1,4 +1,13 @@
 .idea
-.venv
+obj_count_env/
 spikes
 *.pyc
+__pycache__
+__pycache__/*
+app.log
+.dockerignore
+.DS_Store
+.DS_Store/*
+.pytest_cache
+.env
+pytest.ini

@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Web application service (Flask API)
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Assuming you have a Dockerfile to build your Flask app
+    container_name: webapp
+    ports:
+      - "5003:5003"  # Web app port
+    environment:
+      - ENV=prod
+    depends_on:
+      - postgres
+      - tfserving
+    networks:
+      - backend
+
+  # PostgreSQL service
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    ports:
+      - "5433:5433"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # Correct volume name here
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - .env
+    entrypoint: >
+      sh -c "
+      docker-entrypoint.sh postgres
+      && psql -U db -d postgres -c 'CREATE SCHEMA IF NOT EXISTS public;' 
+      "  # Ensure the schema creation command is correct
+
+  # TensorFlow Serving service
+  tfserving:
+    image: emacski/tensorflow-serving:latest
+    container_name: tfserving_
+    platform: linux/arm64
+    ports:
+      - "8503:8500"  # gRPC port
+      - "8504:8501"  # REST API port
+    volumes:
+      - ./tmp/model:/models  # Model directory
+    environment:
+      - OMP_NUM_THREADS=4
+      - TENSORFLOW_INTER_OP_PARALLELISM=2
+      - TENSORFLOW_INTRA_OP_PARALLELISM=4
+      - TF_ENABLE_ONEDNN_OPTS=0
+    command: "--model_config_file=/models/model_config.config"  # Make sure this file exists
+    networks:
+      - backend
+
+  # Nginx service (Proxy)
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf  # Ensure this file exists and is configured properly
+    depends_on:
+      - webapp  # Correct the dependency to 'webapp'
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres-data:  # Ensure this is correctly defined to store PostgreSQL data
