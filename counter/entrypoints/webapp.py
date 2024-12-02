@@ -49,6 +49,6 @@ if __name__ == '__main__':
         debug_mode = env != "prod"
         logger.info(f"Starting the application in {env} mode.")
         app = create_app()
-        app.run('0.0.0.0', port=5003, debug=debug_mode)
+        app.run('0.0.0.0', port=5002, debug=debug_mode)
     except Exception as e:
         logger.critical(f"Failed to start the application: {e}")

@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile  # Assuming you have a Dockerfile to build your Flask app
     container_name: webapp
     ports:
-      - "5003:5003"  # Web app port
+      - "5002:5002"  # Web app port
     environment:
       - ENV=prod
     depends_on:
