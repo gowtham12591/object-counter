@@ -148,7 +148,6 @@ python -m counter.entrypoints.webapp
 
 ```
 pytest
-or pytest -v
 ```
 
 -------------------------
