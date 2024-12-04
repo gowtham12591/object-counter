@@ -11,3 +11,4 @@ app.log
 .pytest_cache
 .env
 pytest.ini
+test_selenium.py

@@ -12,10 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /webapp/
 
 # Expose port for the Flask application
-EXPOSE 5002
+EXPOSE 8080
 
 # Define the environment variable for production
-ENV FLASK_ENV=prod
+# ENV FLASK_ENV=prod
 
 # Run the application
 CMD ["python", "-m", "counter.entrypoints.webapp"]

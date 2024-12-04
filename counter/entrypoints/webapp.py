@@ -8,6 +8,14 @@ def create_app():
     app = Flask(__name__)
     count_action = config.get_count_action()
 
+    @app.route('/')
+    def home():
+        return "Welcome to Objection detection and counting project!"
+
+    @app.route('/health', methods=['GET'])
+    def health_check():
+        return jsonify({"status": "healthy"}), 200
+
     @app.route('/api/v1/object-detect-count', methods=['POST'])
     def object_detection():
         try:
@@ -49,6 +57,6 @@ if __name__ == '__main__':
         debug_mode = env != "prod"
         logger.info(f"Starting the application in {env} mode.")
         app = create_app()
-        app.run('0.0.0.0', port=5002, debug=debug_mode)
+        app.run('0.0.0.0', port=8080, debug=debug_mode)
     except Exception as e:
         logger.critical(f"Failed to start the application: {e}")
