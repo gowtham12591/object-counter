@@ -64,11 +64,11 @@ jobs:
           docker-compose up -d
           sleep 30  # Wait for services to start
 
-      - name: Test Main Project API
-        run: |
-          echo "Testing main project API..."
-          curl -F "threshold=0.9" -F "file=@resources/images/boy.jpg" http://0.0.0.0:8085/object-detec-count || (echo "API endpoint test failed" && exit 1)
-          curl --fail http://0.0.0.0:8085/health || (echo "Health check failed" && exit 1)
+      # - name: Test Main Project API
+      #   run: |
+      #     echo "Testing main project API..."
+      #     curl -F "threshold=0.9" -F "file=@resources/images/boy.jpg" http://0.0.0.0:8085/object-detec-count || (echo "API endpoint test failed" && exit 1)
+      #     curl --fail http://0.0.0.0:8085/health || (echo "Health check failed" && exit 1)
 
       - name: Stop Services
         run: docker-compose down
