@@ -69,7 +69,7 @@ jobs:
           echo "Testing main project API..."
           curl --fail -X POST \
             -H "Content-Type: application/json" \
-            -d '{"image_url": "https://example.com/sample-image.jpg"}' \
+            -d '{"image_url": "https://as2.ftcdn.net/v2/jpg/03/21/17/83/1000_F_321178379_1PR3NpHHujbUtEfNGOLihMyfW2YO8Sjz.jpg"}' \
             http://localhost:8080/api/v1/object-detect-count || (echo "API endpoint test failed" && exit 1)
           curl --fail http://localhost:8080/health || (echo "Health check failed" && exit 1)
 

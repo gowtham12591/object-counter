@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /webapp/
 
 # Expose port for the Flask application
-EXPOSE 8080
+EXPOSE 8085
 
 # Define the environment variable for production
 # ENV FLASK_ENV=prod
