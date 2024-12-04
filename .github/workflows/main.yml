@@ -73,4 +73,3 @@ jobs:
       - name: Stop Services
         run: docker-compose down
 
-        curl -F "threshold=0.9" -F "file=@resources/images/boy.jpg" http://0.0.0.0:8085/object-detec-count
