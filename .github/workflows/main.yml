@@ -62,14 +62,14 @@ jobs:
         run: |
           docker-compose build
           docker-compose up -d
-          sleep 15  # Wait for services to start
+          sleep 30  # Wait for services to start
 
       - name: Test Main Project API
         run: |
           echo "Testing main project API..."
           curl --fail -X POST \
             -H "Content-Type: application/json" \
-            -d '{"image_url": "https://as2.ftcdn.net/v2/jpg/03/21/17/83/1000_F_321178379_1PR3NpHHujbUtEfNGOLihMyfW2YO8Sjz.jpg"}' \
+            -d '{"threshold" : 0.9, "file": "https://as2.ftcdn.net/v2/jpg/03/21/17/83/1000_F_321178379_1PR3NpHHujbUtEfNGOLihMyfW2YO8Sjz.jpg"}' \
             http://0.0.0.0:8085/api/v1/object-detect-count || (echo "API endpoint test failed" && exit 1)
           curl --fail http://0.0.0.0:8085/health || (echo "Health check failed" && exit 1)
 
