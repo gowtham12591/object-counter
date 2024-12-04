@@ -30,7 +30,7 @@ services:
       - ./models:/models
     command: --model_config_file=/models/model_config.config
     ports:
-      - "8500:8500"
+      - "8503:8500"
       - "8502:8501"
 
   nginx:
