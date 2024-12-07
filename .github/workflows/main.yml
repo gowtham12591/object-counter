@@ -19,15 +19,18 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U user -d testdb -h localhost"
+          --health-cmd="pg_isready -U postgres -d postgres"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-      tf-serving:
-        image: emacski/tensorflow-serving:latest
+
+      main-app:
+        image: your-app-image  # Replace with your actual image name
         ports:
-          - 8500:8500
-          - 8501:8501
+          - 8085:8085
+        env:
+          # Add any necessary environment variables
+          DATABASE_URL: postgresql://postgres:password@123@postgres:5432/postgres
 
     steps:
       - name: Checkout Code
@@ -42,31 +45,45 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install requests  # Ensure requests is installed for API testing
 
       - name: Lint and Test Application
         run: |
           python -m pytest tests
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      - name: Install Docker Compose
+      - name: Wait for Services
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
+          # Add a script to check service readiness
+          sleep 30
+          echo "Checking service availability..."
+          timeout 60 bash -c 'until curl -s http://localhost:8085/health; do sleep 5; done'
 
-      - name: Build and Run Services
+      - name: Test Main Project API
+        env:
+          API_URL: http://localhost:8085
         run: |
-          docker-compose build
-          docker-compose up -d
-          sleep 30  # Wait for services to start
+          python3 - << EOF
+          import requests
+          import os
 
-      # - name: Test Main Project API
-      #   run: |
-      #     echo "Testing main project API..."
-      #     curl -F "threshold=0.9" -F "file=@resources/images/boy.jpg" http://0.0.0.0:8085/object-detec-count || (echo "API endpoint test failed" && exit 1)
-      #     curl --fail http://0.0.0.0:8085/health || (echo "Health check failed" && exit 1)
+          api_url = os.environ['API_URL']
+          
+          # Health check
+          health_response = requests.get(f'{api_url}/health')
+          assert health_response.status_code == 200, "Health check failed"
+          print("Health check passed")
 
-      - name: Stop Services
-        run: docker-compose down
+          # Object detection test
+          with open('resources/images/boy.jpg', 'rb') as file:
+              files = {
+                  'file': file,
+                  'threshold': (None, '0.9')
+              }
+              detection_response = requests.post(f'{api_url}/object-detec-count', files=files)
+              assert detection_response.status_code == 200, "Object detection API test failed"
+              print("Object detection test passed")
+          EOF
 
+      - name: Cleanup
+        if: always()
+        run: docker-compose down || true
