@@ -27,14 +27,14 @@ def prod_count_action() -> CountDetectedObjects:
     try:
         # TensorFlow Serving details
         tfs_host = os.getenv('TFS_HOST', 'localhost')
-        tfs_port = int(os.getenv('TFS_PORT', 8503))
+        tfs_port = int(os.getenv('TFS_PORT', 8501))
 
         # PostgreSQL-related environment variables
         postgres_host = os.getenv('POSTGRES_HOST', 'localhost')
-        postgres_port = int(os.getenv('POSTGRES_PORT', 5440))
-        postgres_db = os.getenv('POSTGRES_DB', '')  # Add your postgres DB name
-        postgres_user = os.getenv('POSTGRES_USER', '')  # Add your postgres user
-        postgres_password = os.getenv('POSTGRES_PASSWORD', '')  # Add your postgres password
+        postgres_port = int(os.getenv('POSTGRES_PORT', 5432))
+        postgres_db = os.getenv('POSTGRES_DB', 'postgres')  # Add your postgres DB name
+        postgres_user = os.getenv('POSTGRES_USER', 'postgres')  # Add your postgres user
+        postgres_password = os.getenv('POSTGRES_PASSWORD', 'password@123')  # Add your postgres password
 
         # Log the loaded configuration (you can replace this with your logger)
         logger.info(f"Loaded the postgres database for updating/getting the details")

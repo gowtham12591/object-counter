@@ -12,3 +12,4 @@ app.log
 .env
 pytest.ini
 test_selenium.py
+models/rfcn
