@@ -27,7 +27,7 @@ def prod_count_action() -> CountDetectedObjects:
     try:
         # TensorFlow Serving details
         tfs_host = os.getenv('TFS_HOST', 'localhost')
-        tfs_port = int(os.getenv('TFS_PORT', 8501))
+        tfs_port = int(os.getenv('TFS_PORT', 8503))
 
         # PostgreSQL-related environment variables
         postgres_host = os.getenv('POSTGRES_HOST', 'localhost')
