@@ -121,7 +121,7 @@ jobs:
                       'file': file,
                       'threshold': (None, '0.9')
                   }
-                  detection_response = test_endpoint(f'{api_url}/object-detec-count', method='post', files=files)
+                  detection_response = test_endpoint(f'{api_url}/api/v1/object-detec-count', method='post', files=files)
                   print("Object Detection Test Passed")
 
           except Exception as e:
