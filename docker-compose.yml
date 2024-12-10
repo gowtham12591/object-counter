@@ -15,7 +15,7 @@ services:
       - postgres
       - tf-serving
     environment:
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/app_db
+      - DATABASE_URL=postgresql://postgres:password@postgres:5433/app_db
 
   postgres:
     image: postgres:14
@@ -25,7 +25,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: app_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   tf-serving:
     image: emacski/tensorflow-serving:latest
@@ -34,8 +34,8 @@ services:
       - ./models:/models
     command: --model_config_file=/models/model_config.config
     ports:
-      - "8501:8500"
-      - "8501:8501"
+      - "8503:8500"
+      - "8504:8501"
 
   nginx:
     image: nginx:latest
