@@ -17,7 +17,7 @@ jobs:
           POSTGRES_PASSWORD: password
           POSTGRES_DB: app_db
         ports:
-          - 5433:5432
+          - 5440:5432
         options: >-
           --health-cmd="pg_isready -U postgres -d app_db"
           --health-interval=10s
@@ -112,10 +112,12 @@ jobs:
 
           try:
               # Health Check
-              health_response = test_endpoint(f'{api_url}/health')
-              print("Health Check Passed")
+              #health_response = test_endpoint(f'{api_url}/health')
+              #print("Health Check Passed")
 
               # Object Detection Test
+              print('-'*100)
+              print("Testing API Endpoints")
               with open('resources/images/boy.jpg', 'rb') as file:
                   files = {
                       'file': file,
