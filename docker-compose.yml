@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+        - REPO_OWNER=${GITHUB_USERNAME}
+        - REPO_NAME=${GITHUB_REPOSITORY}
+    ports:
+      - "8085:8080"
+    depends_on:
+      - postgres
+      - tf-serving
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/app_db
+
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_db
+    ports:
+      - "5440:5432"
+
+  tf-serving:
+    image: emacski/tensorflow-serving:latest
+    restart: always
+    volumes:
+      - ./models:/models
+    command: --model_config_file=/models/model_config.config
+    ports:
+      - "8503:8500"
+      - "8504:8501"

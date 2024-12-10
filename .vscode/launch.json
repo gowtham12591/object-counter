@@ -3,24 +3,24 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
+    "configurations": [                  // contains the configuration for flask
         {
-            "name": "Python: Flask",
-            "type": "python",
-            "request": "launch",
-            "module": "flask",
-            "env": {
-                "FLASK_APP": "counter/entrypoints/webapp.py",
-                "FLASK_DEBUG": "1",
+            "name": "Python: Flask",     // Name of the debugging configuration 
+            "type": "debugpy",           // changed it from python to debugpy as the earlier will be depreciated soon
+            "request": "launch",         // configuration launches a new program rather than attaching to an already-running process.
+            "module": "flask",           // Flask module should be launched. This is equivalent to running python -m flask in the terminal.       
+            "env": {                                            // Contains environment variables to set for the Flask application during debugging
+                "FLASK_APP": "counter/entrypoints/webapp.py",   // EQ: running export FLASK_APP=counter/entrypoints/webapp.py in a terminal.
+                "FLASK_DEBUG": "1",                             // Enables Flask’s debugging mode, allowing live reloading and better error messages.
                 "ENV": "prod"
             },
             "args": [
-                "run",
-                "--no-debugger",
-                "--no-reload"
+                "run",                   // Runs the Flask development server
+                "--no-debugger",         // Disables Flask’s built-in debugger
+                "--no-reload"            // Disables automatic reloading of the application when code changes
             ],
-            "jinja": true,
-            "justMyCode": true
+            "jinja": true,               // Enables Jinja template debugging, allowing you to debug template rendering in Flask.
+            "justMyCode": true           // Tells the debugger to focus only on your code, ignoring library and framework internals
         }
     ]
 }

@@ -64,14 +64,48 @@ docker run `
     -e TENSORFLOW_INTRA_OP_PARALLELISM=$num_physical_cores `
     intel/intel-optimized-tensorflow-serving:2.8.0 `
     --model_config_file=/models/model_config.config
+
+-----------
+For MAC ARM processor use the below code
+# Get cores per socket (physical cores per processor)
+cores_per_socket=$(sysctl -n hw.physicalcpu)
+# macOS systems typically have only one socket, so num_sockets = 1
+num_sockets=1
+# Calculate total number of physical cores
+num_physical_cores=$((cores_per_socket * num_sockets))
+# Pull the TensorFlow Serving development image with ARM support
+docker pull emacski/tensorflow-serving:latest
+# Run TensorFlow Serving
+docker run \
+    --name=tfserving \
+    -p 8500:8500 \
+    -p 8501:8501 \
+    -v "$(pwd)/tmp/model:/models" \
+    -e OMP_NUM_THREADS=$(sysctl -n hw.physicalcpu) \
+    -e TENSORFLOW_INTER_OP_PARALLELISM=2 \
+    -e TENSORFLOW_INTRA_OP_PARALLELISM=$(sysctl -n hw.physicalcpu) \
+    emacski/tensorflow-serving:latest \
+    --model_config_file=/models/model_config.config
+
+or
+** In this repo you can check start_tfserving.sh file, run the below two commands to serve the model 
+chmod +x start_tfserving.sh
+./start_tfserving.sh
+
 ```
 
 
-## Run mongo 
+## Run postgresdb
 
 ```bash
-docker rm -f test-mongo
-docker run --name test-mongo --rm -p 27017:27017 -d mongo:latest
+# Add the respective postgres db details like user, password and database name
+docker rm -f test-postgres
+docker run --name test-postgres --rm \
+    -e POSTGRES_USER= \
+    -e POSTGRES_PASSWORD= \
+    -e POSTGRES_DB= \
+    -p 5432:5432 \
+    -d postgres:latest
 ```
 
 
@@ -105,9 +139,9 @@ python -m counter.entrypoints.webapp
 ## Call the service
 
 ```shell script
- curl -F "threshold=0.9" -F "file=@resources/images/boy.jpg" http://0.0.0.0:5000/object-count
- curl -F "threshold=0.9" -F "file=@resources/images/cat.jpg" http://0.0.0.0:5000/object-count
- curl -F "threshold=0.9" -F "file=@resources/images/food.jpg" http://0.0.0.0:5000/object-count 
+ curl -F "threshold=0.9" -F "file=@resources/images/boy.jpg" http://0.0.0.0:5002/object-detec-count
+ curl -F "threshold=0.9" -F "file=@resources/images/cat.jpg" http://0.0.0.0:5002/object-detec-count
+ curl -F "threshold=0.9" -F "file=@resources/images/food.jpg" http://0.0.0.0:5002/object-detec-count 
 ```
 
 ## Run the tests
@@ -115,3 +149,22 @@ python -m counter.entrypoints.webapp
 ```
 pytest
 ```
+
+-------------------------
+### Docker compose set-up and testing
+- To make the project easily configurable across different environments, create a container for this project with all the other container images created parallely 
+The different container images include (webapp, postgresdb, tfserving and nginx(optional - better for reverse proxy and security))
+Refer to the docker-compose.yml file in the repo for the set-up
+To run this container use the below commands
+*** pre-requsite install docker/docker-desktop before testing this
+```
+docker-compose build
+docker-compose up -d
+
+#Incase of shutting down the container use
+docker-compose down
+```
+
+
+
+
