@@ -149,11 +149,11 @@ jobs:
               print(f"API Testing Failed: {e}")
               
               # Diagnostic information
-              print("\n--- Docker Compose Status ---")
-              !docker-compose ps
-              print("\n--- Docker Compose Logs ---")
-              !docker-compose logs
-              sys.exit(1)
+              # Print additional diagnostic information
+              import subprocess
+              subprocess.run(["docker-compose", "ps"])
+              subprocess.run(["docker-compose", "logs"])
+              raise
           EOF
       - name: Cleanup
         if: always()
