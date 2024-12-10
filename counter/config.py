@@ -31,7 +31,7 @@ def prod_count_action() -> CountDetectedObjects:
 
         # PostgreSQL-related environment variables
         postgres_host = os.getenv('POSTGRES_HOST', 'localhost')
-        postgres_port = int(os.getenv('POSTGRES_PORT', 5433))
+        postgres_port = int(os.getenv('POSTGRES_PORT', 5432))
         postgres_db = os.getenv('POSTGRES_DB', '')  # Add your postgres DB name
         postgres_user = os.getenv('POSTGRES_USER', '')  # Add your postgres user
         postgres_password = os.getenv('POSTGRES_PASSWORD', '')  # Add your postgres password
